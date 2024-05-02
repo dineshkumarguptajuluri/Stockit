@@ -6,12 +6,16 @@ const CheckSales = () => {
     const [date1, setDate1] = useState(() => new Date().toISOString().slice(0, 10));
     const [date2, setDate2] = useState(() => new Date().toISOString().slice(0, 10));
     const [error, setError] = useState('');
+    const [grandT, setGrandT] = useState(0); // Fixed typo 'useStae' to 'useState'
+    const [grandP, setGrandP] = useState(0);
 
     useEffect(() => {
         async function fetchInitialSales() {
             try {
                 const response = await axios.get('http://localhost:4000/getSales');
                 setSales(response.data.sales);
+                setGrandT(response.data.sales.reduce((acc, sale) => acc + sale.grandTotal, 0));
+                setGrandP(response.data.sales.reduce((acc, sale) => acc + sale.grandProfit, 0));
             } catch (error) {
                 console.error('Error fetching initial sales data:', error);
             }
@@ -23,7 +27,6 @@ const CheckSales = () => {
         async function fetchSalesByDate() {
             if (new Date(date1) > new Date(date2)) {
                 setError('Start date cannot be later than end date.');
-               
                 return; // Prevent further execution
             }
             setError(''); // Clear previous error messages
@@ -34,8 +37,12 @@ const CheckSales = () => {
                 });
                 if (response.data.sales.length > 0) {
                     setSales(response.data.sales);
+                    setGrandT(response.data.sales.reduce((acc, sale) => acc + sale.grandTotal, 0));
+                    setGrandP(response.data.sales.reduce((acc, sale) => acc + sale.grandProfit, 0));
                 } else {
-                   
+                    setSales([]); // Clear previous sales
+                    setGrandT(0); // Reset grand total
+                    setGrandP(0); // Reset grand profit
                     alert('No sales present in the selected date range.');
                 }
             } catch (error) {
@@ -56,7 +63,6 @@ const CheckSales = () => {
                 type="date"
                 value={date1}
                 onChange={(e) => setDate1(e.target.value)}
-             
             />
             <label htmlFor="date2">To:</label>
             <input
@@ -64,15 +70,18 @@ const CheckSales = () => {
                 type="date"
                 value={date2}
                 onChange={(e) => setDate2(e.target.value)}
-       
             />
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {sales.length > 0 ? (
-                sales.map((sale) => (
-                    <div key={sale._id}>
-                        <p>{sale.buyerName} - ${sale.grandTotal}</p>
-                    </div>
-                ))
+                <>
+                    {sales.map((sale) => (
+                        <div key={sale._id}>
+                            <p>{sale.buyerName} - ${sale.grandTotal}</p>
+                        </div>
+                    ))}
+                    <h4>Total Grand Total: ${grandT}</h4>
+                    <h4>Total Grand Profit: ${grandP}</h4>
+                </>
             ) : (
                 !error && <p>No sales present in the selected date range.</p>
             )}
@@ -81,4 +90,3 @@ const CheckSales = () => {
 };
 
 export default CheckSales;
- 
