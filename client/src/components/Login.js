@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from './UserContext';
  
 
 function Login() {
@@ -9,6 +10,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const {login}=useUser();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -23,6 +25,7 @@ function Login() {
    navigate("/home");
    console.log(response.data.token);
     localStorage.setItem("token",response.data.token);
+    login();
       // Redirect to home page or perform other actions based on successful login
     } else {
       setErrorMessage('Invalid username or password'); // Set error message
