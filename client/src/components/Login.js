@@ -21,6 +21,8 @@ function Login() {
     if (response.data.success) { // Assuming response has a success property
       // Handle successful login
    navigate("/home");
+   console.log(response.data.token);
+    localStorage.setItem("token",response.data.token);
       // Redirect to home page or perform other actions based on successful login
     } else {
       setErrorMessage('Invalid username or password'); // Set error message

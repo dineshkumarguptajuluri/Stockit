@@ -9,12 +9,17 @@ const Purchase = () => {
   const [sellerName, setSellerName] = useState('');
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const navigate = useNavigate();
+  const token=localStorage.getItem("token");
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/getProducts');
-        const productData = response.data.products;
+        const response = await axios.get('http://localhost:4000/getStock',{
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const productData = response.data.stock;
         setProducts(productData);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -127,7 +132,11 @@ const addOrUpdateProduct = (productId, quantity) => {
     };
 
     console.log('Submitting purchase:', purchaseData);
-    axios.post('http://localhost:4000/purchase', purchaseData)
+    axios.post('http://localhost:4000/purchase', purchaseData,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then(response => {
         navigate('/success');
       })

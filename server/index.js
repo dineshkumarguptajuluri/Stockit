@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt'); // For password hashing
+const jwt = require('jsonwebtoken');
+const secretKey="Dinesh Kumar Juluri";
 
 const app = express();
 const port =4000;
@@ -10,6 +12,7 @@ app.use(cors({
   origin: 'http://localhost:3000', // Replace with your React app's origin
   credentials: true // Allow cookies for authenticated requests (optional)
 }));
+app.use(express.json());
 
 // Connect to MongoDB (replace with your connection string)
 mongoose.connect('mongodb+srv://juluridineshkumar:mVTEA0IEtOgAjZVu@cluster0.qtn8kcb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
@@ -62,7 +65,7 @@ app.post('/signup',async(req,res)=>{
     console.error(err);
     res.status(500).send({ success: false }); // Generic error for security
   }
-})
+});
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -74,6 +77,8 @@ app.post('/login', async (req, res) => {
     if (!user) {
       return res.status(401).send({ success: false }); // Login failed
     }
+    const token = jwt.sign({username:username}, secretKey, { algorithm: 'HS256',expiresIn:'3h'});
+    console.log(token);
 
     // Compare password hashes securely
     const isMatch = await bcrypt.compare(password, user.password);
@@ -82,7 +87,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Login successful
-    res.status(200).send({ success: true }); // Login successful
+    res.status(200).send({ success: true,token }); // Login successful
   } catch (err) {
     console.error(err);
     res.status(500).send({ success: false }); // Generic error for security
@@ -92,6 +97,12 @@ app.post('/addproduct',async(req,res)=>{
 
   const{username,name,price,description}=req.body;
   try{
+    const authHeader = req.headers['authorization'];
+  
+    const token = authHeader.split(' ')[1]; // Assuming Bearer token
+    const decoded=verifyToken(token);
+ 
+   
     console.log("addddd productttt");
     const user = await User.findOne({username}); // Fetch the user object
   
@@ -109,5 +120,6 @@ res.status(200).send({ success: true });
     res.status(200).send({ success: false });
   }
 
-})
+});
+
 app.listen(port, () => console.log(`Server listening on port ${port}`));

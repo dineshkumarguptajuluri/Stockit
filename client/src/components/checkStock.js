@@ -5,11 +5,16 @@ const CheckSales = () => {
     const [stock, setStock] = useState([]);
     const [date1, setDate1] = useState(() => new Date().toISOString().slice(0, 10));
     const [error, setError] = useState('');
+    const token=localStorage.getItem("token");
 
     useEffect(() => {
         async function fetchInitialStock() {
             try {
-                const response = await axios.get('http://localhost:4000/getStock');
+                const response = await axios.get('http://localhost:4000/getStock',{
+                    headers: {
+                      'Authorization': `Bearer ${token}`
+                    }
+                  });
                 setStock(response.data.stock);
             } catch (error) {
                 console.error('Error fetching initial sales data:', error);
@@ -26,7 +31,11 @@ const CheckSales = () => {
                 const response = await axios.post('http://localhost:4000/getStock', {
                     startDate: date1,
                   
-                });
+                },{
+                    headers: {
+                      'Authorization': `Bearer ${token}`
+                    }
+                  });
                 if (response.data.stock.length > 0) {
                     setStock(response.data.stock);
                 } else {

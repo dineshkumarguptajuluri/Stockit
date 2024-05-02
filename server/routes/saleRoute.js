@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/user');
+const Product=require('../models/product');
+const Sale=require('../models/sale');
+const Purchase=require('../models/purchase');
+const verifyToken=require('../controllers/verifyToken');
+
 router.post('/',async(req,res)=>{
-    const username="karthik"
+    //const username="karthik"
     const {  buyerName, products, grandTotal,date } = req.body;
   
   
@@ -11,6 +17,12 @@ router.post('/',async(req,res)=>{
   
   
     try {
+        const authHeader = req.headers['authorization'];
+  
+        const token = authHeader.split(' ')[1]; // Assuming Bearer token
+        const decoded=verifyToken(token);
+        console.log(decoded.userId);
+        const username=decoded.username;
       const user = await User.findOne({username});
       products.forEach(product => {
         product.totalProfit = (product.salePrice - product.pricePerUnit) * product.quantity;

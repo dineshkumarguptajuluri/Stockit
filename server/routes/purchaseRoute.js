@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/user');
+const Product=require('../models/product');
+const Sale=require('../models/sale');
+const Purchase=require('../models/purchase');
+const verifyToken=require('../controllers/verifyToken');
 
 router.post('/', async (req,res)=>{
-    const username="karthik"
+    //const username="karthik"
     const {  sellerName, products, grandTotal,date} = req.body;
   
     if (!products.length) {
@@ -11,7 +16,12 @@ router.post('/', async (req,res)=>{
   
   
     try {
-      const user = await User.findOne({username});
+        const authHeader = req.headers['authorization'];
+  
+        const token = authHeader.split(' ')[1]; // Assuming Bearer token
+        const decoded=verifyToken(token);
+        const username=decoded.username;
+        const user = await User.findOne({username});
         const newPurchase = new Purchase({
             user,
             sellerName,

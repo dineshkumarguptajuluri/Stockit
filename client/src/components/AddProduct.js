@@ -11,6 +11,7 @@ const AddProduct = ({ onSubmit }) => {
     errors: {},
   };
   const navigate=useNavigate();
+  const token=localStorage.getItem("token");
 
   const [productData, setProductData] = React.useState(initialState);
 
@@ -62,7 +63,11 @@ const AddProduct = ({ onSubmit }) => {
     const username='karthik';
     const daata={...productData,username};
     console.log(daata);
-    const response =await axios.post('http://localhost:4000/addproduct',daata) ;
+    const response =await axios.post('http://localhost:4000/addproduct',daata,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }) ;
     if (response.data.success) { // Assuming response has a success property
         // Handle successful login
         alert('product is succesfully added');

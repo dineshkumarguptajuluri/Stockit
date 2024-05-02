@@ -8,11 +8,17 @@ const CheckSales = () => {
     const [error, setError] = useState('');
     const [grandT, setGrandT] = useState(0); // Fixed typo 'useStae' to 'useState'
     const [grandP, setGrandP] = useState(0);
+    const token=localStorage.getItem("token");
 
     useEffect(() => {
         async function fetchInitialSales() {
             try {
-                const response = await axios.get('http://localhost:4000/getSales');
+                
+                const response = await axios.get('http://localhost:4000/getSales', {
+                    headers: {
+                      'Authorization': `Bearer ${token}`
+                    }
+                  });
                 setSales(response.data.sales);
                 setGrandT(response.data.sales.reduce((acc, sale) => acc + sale.grandTotal, 0));
                 setGrandP(response.data.sales.reduce((acc, sale) => acc + sale.grandProfit, 0));
@@ -34,7 +40,11 @@ const CheckSales = () => {
                 const response = await axios.post('http://localhost:4000/getSales', {
                     startDate: date1,
                     endDate: date2
-                });
+                },{
+                    headers: {
+                      'Authorization': `Bearer ${token}`
+                    }
+                  });
                 if (response.data.sales.length > 0) {
                     setSales(response.data.sales);
                     setGrandT(response.data.sales.reduce((acc, sale) => acc + sale.grandTotal, 0));

@@ -1,10 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/user');
+const Product=require('../models/product');
+const Sale=require('../models/sale');
+const Purchase=require('../models/purchase');
+const verifyToken=require('../controllers/verifyToken');
+
 router.get('/', async (req, res) => {
     // Retrieve the user ID from the request or token (replace with your logic)
-    const username="karthik" // Assuming user ID is in 'id' property of user object or 'userId' property of token
+    //const username="karthik" // Assuming user ID is in 'id' property of user object or 'userId' property of token
     try {
-      const user = await User.findOne({username});
+        const authHeader = req.headers['authorization'];
+  
+    const token = authHeader.split(' ')[1]; // Assuming Bearer token
+    const decoded=verifyToken(token);
+    const username=decoded.username;
+    const user = await User.findOne({username});
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
@@ -22,10 +33,15 @@ router.get('/', async (req, res) => {
     }
   });
   router.post('/', async (req, res) => {
-    const username = "karthik";
+    //const username = "karthik";
     try {
+        const authHeader = req.headers['authorization'];
+  
+        const token = authHeader.split(' ')[1]; // Assuming Bearer token
+        const decoded=verifyToken(token);
         const { startDate } = req.body;
-        const user = await User.findOne({ username });
+        const username=decoded.username;
+        const user = await User.findOne({username});
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
