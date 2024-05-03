@@ -1,0 +1,72 @@
+/* AuthForms.css - This will be shared between Login and SignUp */
+
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f2f5;  /* Light background suitable for forms */
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-form {
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 360px;
+    z-index: 1; /* Ensure form is visually on top of any background animations */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4A90E2;
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 10px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-auth:hover {
+    background-color: #357ABD;
+}
+
+.alert {
+    color: #d9534f;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    text-align: center;
+    background-color: #f2dede;
+}
+
+.background-circle {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent circles */
+    border-radius: 50%;
+    animation: float 10s ease-in-out infinite; /* Subtle and slow animation */
+    will-change: transform;
+}
+
+/* Keeping the animation and circle styles consistent for a cohesive design across both forms */

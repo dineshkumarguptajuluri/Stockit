@@ -1,0 +1,62 @@
+/* CheckStock.css */
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.instructions {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.date-selection {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.date-selection label,
+.date-selection input {
+    margin: 0 10px;
+}
+
+input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.stock-item {
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-left: 5px solid #007bff;
+    border-radius: 4px;
+}
+
+.no-stock {
+    text-align: center;
+    font-style: italic;
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import '../styles/Purchase.css';
 const Purchase = () => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -60,121 +60,125 @@ const addOrUpdateProduct = (productId, quantity) => {
         setSelectedProducts([...selectedProducts, productToAdd]);
     }
 };
+const handleSaleSubmit = (event) => {
+  event.preventDefault();
+  if (!selectedProducts.length) {
+    setErrorMessage('Please select products to purchase');
+    return;
+  }
 
+  const productsWithPrices = selectedProducts.map(item => {
+    const product = products.find(p => p._id === item.productId);
+    const total = item.quantity * item.purchasePrice;
+    return { ...item, productName: product.name, pricePerUnit: item.purchasePrice, totalPrice: total };
+  });
 
-  const renderProducts = () => {
-    let grandTotal = 0; // Initialize grand total
+  const grandTotal = productsWithPrices.reduce((acc, curr) => acc + curr.totalPrice, 0);
 
-    if (!products.length) {
-      return <p>Loading products...</p>;
+  const purchaseData = {
+    sellerName,
+    date,
+    products: productsWithPrices,
+    grandTotal
+  };
+
+  console.log('Submitting purchase:', purchaseData);
+  axios.post('http://localhost:4000/purchase', purchaseData,{
+    headers: {
+      'Authorization': `Bearer ${token}`
     }
-    return (
-      <>
+  })
+    .then(response => {
+      navigate('/home/checkPurchases');
+    })
+    .catch(error => {
+      setErrorMessage('Failed to complete purchase');
+    });
+};
+
+
+
+const renderProducts = () => {
+  let grandTotal = 0;
+
+  if (!products.length) {
+    return <p>Loading products...</p>;
+  }
+
+  return (
+    <table className="product-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Unit Price</th>
+          <th>Quantity</th>
+          <th>Purchase Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
         {products.map((product) => {
-          const selectedProduct = selectedProducts.find(
-            item => item.productId === product._id
-          );
+          const selectedProduct = selectedProducts.find(item => item.productId === product._id);
           const quantity = selectedProduct ? selectedProduct.quantity : '';
           const purchasePrice = selectedProduct ? selectedProduct.purchasePrice : '';
           const individualPrice = selectedProduct ? purchasePrice * quantity : 0;
           grandTotal += individualPrice;
 
           return (
-            <div key={product._id} className="product-item">
-              <p>{product.name}</p>
-              <p>Unit Price: ${product.price.toFixed(2)}</p>
-              <input
-  type="number"
-  min="1"
-  placeholder="Enter Quantity"
-  value={quantity === 0 ? '' : quantity}  // Display empty if zero
-  onChange={e => addOrUpdateProduct(product._id, e.target.value)}
-/>
-
-<input
-  type="number"
-  placeholder="Enter Purchase Price"
-  value={purchasePrice === 0 ? '' : purchasePrice}  // Display empty if zero
-  onChange={e => handleProductChange(product._id, 'purchasePrice', e.target.value)}
-/>
-
-              <p>Total: ${individualPrice.toFixed(2)}</p>
-            </div>
+            <tr key={product._id}>
+              <td>{product.name}</td>
+              <td>${product.price.toFixed(2)}</td>
+              <td>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Enter Quantity"
+                  value={quantity}
+                  onChange={e => addOrUpdateProduct(product._id, e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  placeholder="Enter Purchase Price"
+                  value={purchasePrice}
+                  onChange={e => handleProductChange(product._id, 'purchasePrice', e.target.value)}
+                />
+              </td>
+              <td>${individualPrice.toFixed(2)}</td>
+            </tr>
           );
         })}
-        <div className="grand-total">
-          <h3>Grand Total: ${grandTotal.toFixed(2)}</h3>
-        </div>
-      </>
-    );
-  };
-
-  const handleSaleSubmit = (event) => {
-    event.preventDefault();
-    if (!selectedProducts.length) {
-      setErrorMessage('Please select products to purchase');
-      return;
-    }
-
-    const productsWithPrices = selectedProducts.map(item => {
-      const product = products.find(p => p._id === item.productId);
-      const total = item.quantity * item.purchasePrice;
-      return { ...item, productName: product.name, pricePerUnit: item.purchasePrice, totalPrice: total };
-    });
-
-    const grandTotal = productsWithPrices.reduce((acc, curr) => acc + curr.totalPrice, 0);
-
-    const purchaseData = {
-      sellerName,
-      date,
-      products: productsWithPrices,
-      grandTotal
-    };
-
-    console.log('Submitting purchase:', purchaseData);
-    axios.post('http://localhost:4000/purchase', purchaseData,{
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        navigate('/success');
-      })
-      .catch(error => {
-        setErrorMessage('Failed to complete purchase');
-      });
-  };
-
-  return (
-    <div>
-      <h2>Purchase Products</h2>
-      <form onSubmit={handleSaleSubmit}>
-        <div>
-          <label htmlFor="sellerName">Seller Name:</label>
-          <input
-            id="sellerName"
-            type="text"
-            value={sellerName}
-            onChange={(e) => setSellerName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="date">Date:</label>
-          <input
-            id="date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        {renderProducts()}
-        <button type="submit">Purchase Products</button>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-      </form>
-    </div>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colSpan="4" style={{ textAlign: 'right' }}>Grand Total:</td>
+          <td>${grandTotal.toFixed(2)}</td>
+        </tr>
+      </tfoot>
+    </table>
   );
 };
+
+return (
+  <div className="purchase-container">
+    <h2>Purchase Products</h2>
+    <form onSubmit={handleSaleSubmit}>
+      <div>
+        <label htmlFor="sellerName">Seller Name:</label>
+        <input id="sellerName" type="text" value={sellerName} onChange={e => setSellerName(e.target.value)} required />
+      </div>
+      <div>
+        <label htmlFor="date">Date:</label>
+        <input id="date" type="date" value={date} onChange={e => setDate(e.target.value)} required />
+      </div>
+      {renderProducts()}
+      <button type="submit">Purchase Products</button>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+    </form>
+  </div>
+);
+};
+
 
 export default Purchase;

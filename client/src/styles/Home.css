@@ -1,0 +1,71 @@
+/* Home.css */
+
+.home-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh; /* Full viewport height */
+}
+.dinnu{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.top-nav {
+    background-color: #2C3E50; /* Dark blue-grey */
+    color: #ECF0F1; /* Soft, light grey-white */
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem; /* Larger font size for better readability */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.top-nav h1 {
+    margin: 0;
+    font-size: 2rem; /* Larger title */
+}
+
+.top-nav button {
+    padding: 0.6rem 1.2rem;
+    background-color: #E74C3C; /* Bright red for attention */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.top-nav button:hover {
+    background-color: #C0392B; /* Darker shade of red on hover */
+}
+
+.side-nav {
+    background-color: #34495E; /* Darker shade of blue-grey */
+    color: #ECF0F1;
+    padding: 1rem;
+    width: 250px; /* Slightly wider sidebar for better effect */
+    flex-shrink: 0;
+    height: calc(100vh - 60px); /* Adjust height considering top nav height */
+    overflow-y: auto;
+}
+
+.side-nav a {
+    display: block;
+    padding: 0.8rem 1rem;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease-out, background-color 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+.side-nav a:hover {
+    background-color: #4A6572; /* Subtle change in background */
+    transform: translateX(10px); /* Shift text to the right */
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ECF0F1; /* Light grey-white matching the text color */
+}

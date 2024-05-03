@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import '../styles/CheckPurchases.css';
 
 const CheckPurchases = () => {
     const [purchases, setPurchases] = useState([]);
@@ -63,36 +64,39 @@ const CheckPurchases = () => {
     }, [date1, date2,token]);
 
     return (
-        <>
-            <label htmlFor="date1">From:</label>
-            <input
-                id="date1"
-                type="date"
-                value={date1}
-                onChange={(e) => setDate1(e.target.value)}
-            />
-            <label htmlFor="date2">To:</label>
-            <input
-                id="date2"
-                type="date"
-                value={date2}
-                onChange={(e) => setDate2(e.target.value)}
-            />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="container">
+            <div className="header">Check Purchase History</div>
+            <p className="instructions">Select a date range to view purchases.</p>
+            <div className="date-inputs">
+                <label htmlFor="date1">From:</label>
+                <input
+                    id="date1"
+                    type="date"
+                    value={date1}
+                    onChange={(e) => setDate1(e.target.value)}
+                />
+                <label htmlFor="date2">To:</label>
+                <input
+                    id="date2"
+                    type="date"
+                    value={date2}
+                    onChange={(e) => setDate2(e.target.value)}
+                />
+            </div>
+            {error && <p className="error-message">{error}</p>}
             {purchases.length > 0 ? (
                 <>
                     {purchases.map((purchase) => (
-                        <div key={purchase._id}>
+                        <div key={purchase._id} className="purchase-item">
                             <p>{purchase.sellerName} - ${purchase.grandTotal}</p>
                         </div>
                     ))}
-                    <h4>Total Grand Total: ${grandT}</h4>
+                    <h4 className="total-grand-total">Total Grand Total: ${grandT}</h4>
                 </>
             ) : (
-                !error && <p>No purchases present in the selected date range.</p>
+                !error && <p className="no-purchases">No purchases present in the selected date range.</p>
             )}
-        </>
+        </div>
     );
 };
-
 export default CheckPurchases;

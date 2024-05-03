@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/AddProduct.css'; // Assuming your CSS file is named AddProduct.css and is in the same directory
+
 
 const AddProduct = ({ onSubmit }) => {
   const initialState = {
@@ -86,46 +88,47 @@ const AddProduct = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Add Product</h2>
-      <div className="form-group">
-        <label htmlFor="name">Name:</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={productData.name}
-          onChange={handleChange}
-          required
-        />
-        {productData.errors.name && <p className="error-message">{productData.errors.name}</p>}
-      </div>
-      <div className="form-group">
-        <label htmlFor="price">Price:</label>
-        <input
-          type="number"
-          id="price"
-          name="price"
-          value={productData.price}
-          onChange={handleChange}
-          required
-        />
-        {productData.errors.price && <p className="error-message">{productData.errors.price}</p>}
-      </div>
-      <div className="form-group">
-        <label htmlFor="description">Description:</label>
-        <textarea
-          id="description"
-          name="description"
-          value={productData.description}
-          onChange={handleChange}
-          required
-        />
-        {productData.errors.description && <p className="error-message">{productData.errors.description}</p>}
-      </div>
-   
-      <button type="submit">Add Product</button>
-    </form>
+    <div className="container">
+      <form onSubmit={handleSubmit}>
+        <h2>Add Product</h2>
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={productData.name}
+            onChange={handleChange}
+            required
+          />
+          {productData.errors.name && <p className="error-message">{productData.errors.name}</p>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="price">Price:</label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            value={productData.price}
+            onChange={handleChange}
+            required
+          />
+          {productData.errors.price && <p className="error-message">{productData.errors.price}</p>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="description">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            value={productData.description}
+            onChange={handleChange}
+            required
+          />
+          {productData.errors.description && <p className="error-message">{productData.errors.description}</p>}
+        </div>
+        <button type="submit">Add Product</button>
+      </form>
+    </div>
   );
 };
 

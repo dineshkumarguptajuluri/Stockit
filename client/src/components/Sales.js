@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import "../styles/Sales.css"
 const Sales = () => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -75,119 +75,135 @@ const addOrUpdateProduct = (productId, quantity) => {
       setSelectedProducts([...selectedProducts, productToAdd]);
   }
 };
+const handleSaleSubmit = (event) => {
+  event.preventDefault();
+  if (!selectedProducts.length) {
+    setErrorMessage('Please select products to sell');
+    return;
+  }
+
+  const productsWithPrices = selectedProducts.map(item => {
+    const product = products.find(p => p._id === item.productId);
+    const total = item.quantity * item.salePrice;
+    return { ...item, productName: product.name, pricePerUnit: product.price, totalPrice: total };
+  });
+
+  const grandTotal = productsWithPrices.reduce((acc, curr) => acc + curr.totalPrice, 0);
+
+  const saleData = {
+    buyerName,
+    date,
+    products: productsWithPrices,
+    grandTotal
+  };
+  console.log('Submitting sale:', saleData);
+  axios.post('http://localhost:4000/sale', saleData,{
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      navigate('/home/checkSales');
+    })
+    .catch(error => {
+      setErrorMessage('Failed to complete sale');
+    });
+};
 
   
 
-  const renderProducts = () => {
-    let grandTotal = 0;
+const renderProducts = () => {
+  let grandTotal = 0;
 
-    if (!products.length) {
-      return <p>Loading products...</p>;
-    }
-    return (
-      <>
+  if (!products.length) {
+    return <p>Loading products...</p>;
+  }
+
+  return (
+    <table className="product-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>List Price</th>
+          <th>Quantity</th>
+          <th>Sale Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
         {products.map((product) => {
-          const selectedProduct = selectedProducts.find(
-            item => item.productId === product._id
-          );
-          const quantity = selectedProduct ? selectedProduct.quantity : 0;
-          const salePrice = selectedProduct ? selectedProduct.salePrice : product.price; // Default to product price if not set
+          const selectedProduct = selectedProducts.find(item => item.productId === product._id);
+          const quantity = selectedProduct ? selectedProduct.quantity : '';
+          const salePrice = selectedProduct ? selectedProduct.salePrice : product.price;
           const individualPrice = salePrice * quantity;
           grandTotal += individualPrice;
 
           return (
-            <div key={product._id} className="product-item">
-              <p>{product.name}</p>
-              <p>List Price: ${product.price.toFixed(2)}</p>
-              <input
-                type="number"
-                min="0"
-                placeholder="Enter Quantity"
-                value={quantity}
-                onChange={e => addOrUpdateProduct(product._id, e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="Enter Sale Price"
-                value={salePrice}
-                onChange={e => handleProductChange(product._id, 'salePrice', e.target.value)}
-              />
-              <p>Total: ${individualPrice.toFixed(2)}</p>
-            </div>
+            <tr key={product._id}>
+              <td>{product.name}</td>
+              <td>${product.price.toFixed(2)}</td>
+              <td>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Enter Quantity"
+                  value={quantity}
+                  onChange={e => addOrUpdateProduct(product._id, e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  placeholder="Enter Sale Price"
+                  value={salePrice}
+                  onChange={e => handleProductChange(product._id, 'salePrice', e.target.value)}
+                />
+              </td>
+              <td>${individualPrice.toFixed(2)}</td>
+            </tr>
           );
         })}
-        <div className="grand-total">
-          <h3>Grand Total: ${grandTotal.toFixed(2)}</h3>
-        </div>
-      </>
-    );
-  };
-
-  const handleSaleSubmit = (event) => {
-    event.preventDefault();
-    if (!selectedProducts.length) {
-      setErrorMessage('Please select products to sell');
-      return;
-    }
-
-    const productsWithPrices = selectedProducts.map(item => {
-      const product = products.find(p => p._id === item.productId);
-      const total = item.quantity * item.salePrice;
-      return { ...item, productName: product.name, pricePerUnit: product.price, totalPrice: total };
-    });
-
-    const grandTotal = productsWithPrices.reduce((acc, curr) => acc + curr.totalPrice, 0);
-
-    const saleData = {
-      buyerName,
-      date,
-      products: productsWithPrices,
-      grandTotal
-    };
-    console.log('Submitting sale:', saleData);
-    axios.post('http://localhost:4000/sale', saleData,{
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        navigate('/success');
-      })
-      .catch(error => {
-        setErrorMessage('Failed to complete sale');
-      });
-  };
-
-  return (
-    <div>
-      <h2>Sell Products</h2>
-      <form onSubmit={handleSaleSubmit}>
-        <div>
-          <label htmlFor="buyerName">Buyer Name:</label>
-          <input
-            id="buyerName"
-            type="text"
-            value={buyerName}
-            onChange={(e) => setBuyerName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="date">Date:</label>
-          <input
-            id="date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        {renderProducts()}
-        <button type="submit">Sell Products</button>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-      </form>
-    </div>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colSpan="4" style={{ textAlign: 'right' }}>Grand Total:</td>
+          <td>${grandTotal.toFixed(2)}</td>
+        </tr>
+      </tfoot>
+    </table>
   );
+};
+
+return (
+  <div className="sales-container">
+    <h2>Sell Products</h2>
+    <form onSubmit={handleSaleSubmit}>
+      <div>
+        <label htmlFor="buyerName">Buyer Name:</label>
+        <input
+          id="buyerName"
+          type="text"
+          value={buyerName}
+          onChange={(e) => setBuyerName(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="date">Date:</label>
+        <input
+          id="date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+      </div>
+      {renderProducts()}
+      <button type="submit">Sell Products</button>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+    </form>
+  </div>
+);
 };
 
 export default Sales;

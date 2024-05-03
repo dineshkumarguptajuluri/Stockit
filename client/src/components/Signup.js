@@ -1,69 +1,71 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-//import { useNavigate } from 'react-router-dom';
+import '../styles/SignUp.css'; // Reusing Login.css for Signup
 
 function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const formData = { username, password, email };
 
-
-   async function checkdata(){
-      const formdata={username,password};
-      
-      try{
-        const response=await axios.post('http://localhost:4000/signup',formdata);
-        if (response.data.success) { // Assuming response has a success property
-          // Handle successful login
-         navigate("/")
-          // Redirect to home page or perform other actions based on successful login
-        } else {
-          setErrorMessage('Invalid username or password'); // Set error message
-        }
-      
+    try {
+      const response = await axios.post('http://localhost:4000/signup', formData);
+      if (response.data.success) {
+        navigate("/");  // Redirect to home or login page on successful signup
+      } else {
+        setErrorMessage(response.data.message || 'Signup failed! Please try again.');
       }
-      catch(error){
-        console.log("error during login in react");
-      }
-     }
-     checkdata();
-    
+    } catch (error) {
+      console.error("Error during signup", error);
+      setErrorMessage('Server error during signup. Please try again.');
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          className="form-control"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          className="form-control"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-      <button type="submit" className="btn btn-primary">
-        Signup
-      </button>
-      <Link to="/">Already have a account</Link>
-    </form>
+    <div className="login-container">
+      <form onSubmit={handleSubmit} className="login-form">
+        <h2>Sign Up</h2>
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            className="form-control"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+        <button type="submit" className="btn-login">Signup</button>
+        <Link to="/" className="already-account">Already have an account?</Link>
+      </form>
+    </div>
   );
 }
 

@@ -46,7 +46,7 @@ app.use('/purchase',purchaseRoute);
 
 // Login route (POST)
 app.post('/signup',async(req,res)=>{
-  const{username,password}=req.body;
+  const{username,password,email}=req.body;
   console.log("hiii");
   try {
     // Find user by username
@@ -56,7 +56,7 @@ app.post('/signup',async(req,res)=>{
     }
 
     // Compare password hashes securely
-    const newUser = new User({ username, password });
+    const newUser = new User({ username, password,email });
     await newUser.save();
 
     // Login successful

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import "../styles/CheckSales.css"
 const CheckSales = () => {
     const [sales, setSales] = useState([]);
     const [date1, setDate1] = useState(() => new Date().toISOString().slice(0, 10));
@@ -66,37 +66,40 @@ const CheckSales = () => {
     }, [date1, date2]);
 
     return (
-        <>
-            <label htmlFor="date1">From:</label>
-            <input
-                id="date1"
-                type="date"
-                value={date1}
-                onChange={(e) => setDate1(e.target.value)}
-            />
-            <label htmlFor="date2">To:</label>
-            <input
-                id="date2"
-                type="date"
-                value={date2}
-                onChange={(e) => setDate2(e.target.value)}
-            />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="container">
+            <div className="header">Check Sales History</div>
+            <p className="instructions">Select a date range to view detailed sales data.</p>
+            <div className="date-selection">
+                <label htmlFor="date1">From:</label>
+                <input
+                    id="date1"
+                    type="date"
+                    value={date1}
+                    onChange={(e) => setDate1(e.target.value)}
+                />
+                <label htmlFor="date2">To:</label>
+                <input
+                    id="date2"
+                    type="date"
+                    value={date2}
+                    onChange={(e) => setDate2(e.target.value)}
+                />
+            </div>
+            {error && <p className="error-message">{error}</p>}
             {sales.length > 0 ? (
                 <>
                     {sales.map((sale) => (
-                        <div key={sale._id}>
+                        <div key={sale._id} className="sales-item">
                             <p>{sale.buyerName} - ${sale.grandTotal}</p>
                         </div>
                     ))}
-                    <h4>Total Grand Total: ${grandT}</h4>
-                    <h4>Total Grand Profit: ${grandP}</h4>
+                    <h4 className="total-info">Total Grand Total: ${grandT}</h4>
+                    <h4 className="total-info">Total Grand Profit: ${grandP}</h4>
                 </>
             ) : (
-                !error && <p>No sales present in the selected date range.</p>
+                !error && <p className="no-sales">No sales present in the selected date range.</p>
             )}
-        </>
+        </div>
     );
 };
-
 export default CheckSales;
