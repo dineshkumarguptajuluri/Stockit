@@ -9,7 +9,7 @@ const secretKey="Dinesh Kumar Juluri";
 const app = express();
 const port =4000;
 app.use(cors({
-  origin:[ 'http://localhost:3000','http://192.168.0.129:3000'], // Replace with your React app's origin
+  origin:[ 'http://localhost:3000','https://stockit-98k3.vercel.app'], // Replace with your React app's origin
   credentials: true // Allow cookies for authenticated requests (optional)
 }));
 app.use(express.json());

@@ -17,7 +17,7 @@ function Signup() {
     const formData = { username, password, email };
 
     try {
-      const response = await axios.post('http://localhost:4000/signup', formData);
+      const response = await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/signup', formData);
       if (response.data.success) {
         toast.success("Account has been Created");
         navigate("/");  // Redirect to home or login page on successful signup

@@ -18,7 +18,7 @@ const Sales = () => {
     const fetchProducts = async () => {
       try {
        
-        const response = await axios.get('http://localhost:4000/getStock',{
+        const response = await axios.get('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getStock',{
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -99,7 +99,7 @@ const handleSaleSubmit = (event) => {
     grandTotal
   };
   console.log('Submitting sale:', saleData);
-  axios.post('http://localhost:4000/sale', saleData,{
+  axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/sale', saleData,{
     headers: {
       'Authorization': `Bearer ${token}`
     }

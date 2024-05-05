@@ -16,7 +16,7 @@ const Purchase = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/getStock', {
+        const response = await axios.get('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getStock', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -81,7 +81,7 @@ const Purchase = () => {
       grandTotal
     };
 
-    axios.post('http://localhost:4000/purchase', purchaseData, {
+    axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/purchase', purchaseData, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

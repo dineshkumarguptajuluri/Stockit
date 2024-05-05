@@ -13,7 +13,7 @@ const CheckStock = () => {
   useEffect(() => {
     async function fetchInitialStock() {
       try {
-        const response = await axios.get('http://localhost:4000/getStock', {
+        const response = await axios.get('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getStock', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -30,7 +30,7 @@ const CheckStock = () => {
     async function fetchStockByDate() {
       setError(''); // Clear previous error messages
       try {
-        const response = await axios.post('http://localhost:4000/getStock', {
+        const response = await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getStock', {
           startDate: date1,
         }, {
           headers: {

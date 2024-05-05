@@ -16,7 +16,7 @@ function Login() {
     const formData = { username, password };
 
     try {
-      const response = await axios.post('http://localhost:4000/login', formData);
+      const response = await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/login', formData);
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
         console.log(response.data.token);
