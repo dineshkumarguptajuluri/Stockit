@@ -16,7 +16,7 @@ const CheckPurchases = () => {
     useEffect(() => {
         async function fetchInitialPurchases() {
             try {
-                const response = await axios.get('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getPurchases', {
+                const response = await axios.get('https://stockit-1.onrender.com/getPurchases', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -39,7 +39,7 @@ const CheckPurchases = () => {
             }
             setError('');
             try {
-                const response = await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getPurchases', {
+                const response = await axios.post('https://stockit-1.onrender.com/getPurchases', {
                     startDate: date1,
                     endDate: date2
                 }, {
