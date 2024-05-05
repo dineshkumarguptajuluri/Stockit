@@ -19,7 +19,7 @@ const CheckSales = () => {
     useEffect(() => {
         async function fetchInitialSales() {
             try {
-                const response = await axios.get('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getSales', {
+                const response = await axios.get('https://stockit-2.onrender.com/getSales', {
                     headers: {
                       'Authorization': `Bearer ${token}`
                     }
@@ -43,7 +43,7 @@ const CheckSales = () => {
             }
             setError('');
             try {
-                const response = await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/getSales', {
+                const response = await axios.post('https://stockit-2.onrender.com/getSales', {
                     startDate: date1,
                     endDate: date2
                 },{

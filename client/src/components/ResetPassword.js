@@ -16,7 +16,7 @@ function ResetPassword() {
     const handleEmailSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/resetPassword', { email });
+            const response = await axios.post('https://stockit-2.onrender.com/resetPassword', { email });
             setDinnu(response.data.otp);  // assuming the API sends back the otp or a confirmation of it being sent
             setStep(2);
             toast.info('OTP has been sent to your email.');
@@ -47,7 +47,7 @@ function ResetPassword() {
     const handlePasswordChange = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://stockit-slgj-dinesh-kumars-projects-8a49feb8.vercel.app/changePassword', { email, newPassword });
+            await axios.post('https://stockit-2.onrender.com/changePassword', { email, newPassword });
             toast.success('Password successfully updated.');
             navigate('/');
         } catch (error) {

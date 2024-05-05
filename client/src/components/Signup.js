@@ -17,7 +17,7 @@ function Signup() {
     const formData = { username, password, email };
 
     try {
-      const response = await axios.post('https://stockit-slgj.vercel.app/signup', formData);
+      const response = await axios.post('https://stockit-2.onrender.com/signup', formData);
       if (response.data.success) {
         toast.success("Account has been Created");
         navigate("/");  // Redirect to home or login page on successful signup

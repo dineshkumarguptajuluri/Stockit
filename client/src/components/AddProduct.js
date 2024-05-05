@@ -63,7 +63,7 @@ const AddProduct = () => {
     try {
       const username = 'karthik';
       const data = { ...productData, username };
-      const response = await axios.post('https://stockit-1.onrender.com/addproduct', data, {
+      const response = await axios.post('https://stockit-2.onrender.com/addproduct', data, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
