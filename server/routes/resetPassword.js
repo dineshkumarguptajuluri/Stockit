@@ -1,14 +1,15 @@
 const express=require('express');
 const router=express.Router();
 const bcrypt=require('bcrypt');
-const User=require('../models/User');
+const User=require('../models/user');
 
 const cookieParser = require('cookie-parser');
 const sendOTPEmail=require('../controllers/Mail');
 router.post('/', async (req, res) => {
     try {
-        const { username} = req.body;
-        const user = await User.findOne({ username });
+        const { email} = req.body;
+        console.log(email);
+        const user = await User.findOne({email });
 
         if (!user) {
             return res.status(404).json({ status: 'error', message: 'User not found' });
@@ -17,10 +18,11 @@ router.post('/', async (req, res) => {
         return res.send("Incorrect email is entered");
 
         const otp = generateOTP();
-        const token = jwt.sign({username:username}, secretKey, { algorithm: 'HS256',expiresIn:'3h'});
-        await sendOTPEmail(user.email, otp);
-
-        re
+        sendOTPEmail(email,otp)
+        res.status(200).json({
+            success: true,
+            otp
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Internal Server Error' });

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../styles/Sales.css"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Sales = () => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -104,9 +106,14 @@ const handleSaleSubmit = (event) => {
   })
     .then(response => {
       navigate('/home/checkSales');
+      if(response.data.success)
+        toast.success("Sale has completed Sucessfully");
+      else
+      toast.error("failed to complete sale");
     })
     .catch(error => {
       setErrorMessage('Failed to complete sale');
+      toast.error("failed to complete sale");
     });
 };
 
@@ -134,7 +141,7 @@ const renderProducts = () => {
         {products.map((product) => {
           const selectedProduct = selectedProducts.find(item => item.productId === product._id);
           const quantity = selectedProduct ? selectedProduct.quantity : '';
-          const salePrice = selectedProduct ? selectedProduct.salePrice : product.price;
+          const salePrice = selectedProduct ? selectedProduct.salePrice : '';
           const individualPrice = salePrice * quantity;
           grandTotal += individualPrice;
 

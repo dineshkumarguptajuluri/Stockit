@@ -7,6 +7,8 @@ import AddProduct from './AddProduct';
 import CheckSales from './checkSales';
 import CheckPurchases from './checkPurchases';
 import { useUser } from './UserContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "../styles/Home.css"
 
 const Home = () => {
@@ -16,6 +18,7 @@ const Home = () => {
   const handleLogout = () => {
     logout();
     setIsLoggedOut(true);
+    toast.info("you have been logged out");
   };
 
   if (isLoggedOut) {
@@ -23,8 +26,10 @@ const Home = () => {
   }
 
   return (<div className='dinnu' >
+                <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+
       <header className="top-nav">
-  <h1>Stockit Project Application</h1>
+  <h1>Stockit </h1>
   <button onClick={handleLogout}>Logout</button>
 </header>
     <div className="home-container">

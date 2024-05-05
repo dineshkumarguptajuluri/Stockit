@@ -26,6 +26,8 @@ const SaleItemSchema = new mongoose.Schema({
   salePrice:{
     type:Number,
     required:true
+  },productName:{
+    type:String,required:true
   }
 });
 

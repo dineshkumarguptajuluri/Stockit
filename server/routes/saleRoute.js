@@ -40,10 +40,10 @@ router.post('/',async(req,res)=>{
         console.log("successssssssssssssssssssssssss");
         
         await newSale.save();
-        res.status(201).json(newSale);
+        res.status(201).json({sucess:true});
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.status(500).json({sucess:false});
     }
   });
   async function changeStock(products){

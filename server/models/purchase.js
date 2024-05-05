@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { types } = require('util');
 
 const PurchaseItemSchema = new mongoose.Schema({
   productId: {
@@ -10,6 +11,10 @@ const PurchaseItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 1
+  },
+  productName:{
+    type:String,
+    required:true
   },
   pricePerUnit: {
     type: Number,

@@ -9,7 +9,7 @@ const secretKey="Dinesh Kumar Juluri";
 const app = express();
 const port =4000;
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your React app's origin
+  origin:[ 'http://localhost:3000','http://192.168.0.129:3000'], // Replace with your React app's origin
   credentials: true // Allow cookies for authenticated requests (optional)
 }));
 app.use(express.json());
@@ -34,6 +34,9 @@ const getSales=require('./routes/getSales');
 const getStock=require('./routes/getStock');
 const saleRoute=require('./routes/saleRoute');
 const purchaseRoute=require('./routes/purchaseRoute');
+const resetPassword=require('./routes/resetPassword');
+const verifyToken=require('./controllers/verifyToken');
+
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -42,6 +45,7 @@ app.use('/getSales',getSales);
 app.use('/getStock',getStock);
 app.use('/sale',saleRoute);
 app.use('/purchase',purchaseRoute);
+app.use('/resetPassword',resetPassword);
 
 
 // Login route (POST)
@@ -97,15 +101,18 @@ app.post('/addproduct',async(req,res)=>{
 
   const{username,name,price,description}=req.body;
   try{
+    console.log("hiii");
     const authHeader = req.headers['authorization'];
   
     const token = authHeader.split(' ')[1]; // Assuming Bearer token
+    console.log(token);
     const decoded=verifyToken(token);
+    console.log
  
-   
+   const username=decoded.username;
     console.log("addddd productttt");
     const user = await User.findOne({username}); // Fetch the user object
-  
+ 
 const newProduct = new Product({
   name,
   price,
@@ -121,5 +128,17 @@ res.status(200).send({ success: true });
   }
 
 });
+app.post('/changePassword',async(req,res)=>{
+  const{email,newPassword}=req.body;
+  try{
+    const user=await User.findOne({email});
+    user.password = newPassword;
+    await user.save();
+    res.status(200).send({ success: true });
+  }
+  catch(error){
+    res.status(200).send({ success: false });
+  }
+})
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));

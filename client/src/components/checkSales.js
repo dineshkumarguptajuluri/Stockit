@@ -1,29 +1,35 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/CheckSales.css"
+import "../styles/CheckSales.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 const CheckSales = () => {
     const [sales, setSales] = useState([]);
-    const [date1, setDate1] = useState(() => new Date().toISOString().slice(0, 10));
-    const [date2, setDate2] = useState(() => new Date().toISOString().slice(0, 10));
+    const [selectedSaleId, setSelectedSaleId] = useState(null);
+    const [date1, setDate1] = useState(null);
+    const [date2, setDate2] = useState(null);
     const [error, setError] = useState('');
-    const [grandT, setGrandT] = useState(0); // Fixed typo 'useStae' to 'useState'
+    const [grandT, setGrandT] = useState(0);
     const [grandP, setGrandP] = useState(0);
-    const token=localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         async function fetchInitialSales() {
             try {
-                
                 const response = await axios.get('http://localhost:4000/getSales', {
                     headers: {
                       'Authorization': `Bearer ${token}`
                     }
-                  });
+                });
                 setSales(response.data.sales);
                 setGrandT(response.data.sales.reduce((acc, sale) => acc + sale.grandTotal, 0));
                 setGrandP(response.data.sales.reduce((acc, sale) => acc + sale.grandProfit, 0));
             } catch (error) {
                 console.error('Error fetching initial sales data:', error);
+                toast.error("Error fetching sales data.");
             }
         }
         fetchInitialSales();
@@ -35,7 +41,7 @@ const CheckSales = () => {
                 setError('Start date cannot be later than end date.');
                 return; // Prevent further execution
             }
-            setError(''); // Clear previous error messages
+            setError('');
             try {
                 const response = await axios.post('http://localhost:4000/getSales', {
                     startDate: date1,
@@ -44,19 +50,20 @@ const CheckSales = () => {
                     headers: {
                       'Authorization': `Bearer ${token}`
                     }
-                  });
+                });
                 if (response.data.sales.length > 0) {
                     setSales(response.data.sales);
                     setGrandT(response.data.sales.reduce((acc, sale) => acc + sale.grandTotal, 0));
                     setGrandP(response.data.sales.reduce((acc, sale) => acc + sale.grandProfit, 0));
                 } else {
-                    setSales([]); // Clear previous sales
-                    setGrandT(0); // Reset grand total
-                    setGrandP(0); // Reset grand profit
-                    alert('No sales present in the selected date range.');
+                    setSales([]);
+                    setGrandT(0);
+                    setGrandP(0);
+                    toast.info('No sales present in the selected date range.');
                 }
             } catch (error) {
                 console.error('Error fetching sales data based on date:', error);
+                toast.error("Error fetching sales data.");
             }
         }
 
@@ -65,8 +72,17 @@ const CheckSales = () => {
         }
     }, [date1, date2]);
 
+    const toggleSaleDetails = (saleId) => {
+        if (selectedSaleId === saleId) {
+            setSelectedSaleId(null); // Toggle off if the same sale is clicked again
+        } else {
+            setSelectedSaleId(saleId);
+        }
+    };
+
     return (
         <div className="container">
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className="header">Check Sales History</div>
             <p className="instructions">Select a date range to view detailed sales data.</p>
             <div className="date-selection">
@@ -89,8 +105,38 @@ const CheckSales = () => {
             {sales.length > 0 ? (
                 <>
                     {sales.map((sale) => (
-                        <div key={sale._id} className="sales-item">
-                            <p>{sale.buyerName} - ${sale.grandTotal}</p>
+                        <div key={sale._id}>
+                            <div className="sales-item" onClick={() => toggleSaleDetails(sale._id)}>
+                                <p>{sale.buyerName} - ${sale.grandTotal}</p>
+                            </div>
+                            {selectedSaleId === sale._id && (
+                                <div className="sale-details">
+                                    <h3>Transaction Details</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price Per Unit</th>
+                                                <th>Total Price</th>
+                                                <th>Total Profit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {sale.items.map(item => (
+                                                <tr key={item._id}>
+                                                    <td>{item.productName}</td>
+                                                    <td>{item.quantity}</td>
+                                                    <td>${item.salePrice}</td>
+                                                    <td>${item.totalPrice}</td>
+                                                    <td>${item.totalProfit}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    <button onClick={() => setSelectedSaleId(null)}>Close Details</button>
+                                </div>
+                            )}
                         </div>
                     ))}
                     <h4 className="total-info">Total Grand Total: ${grandT}</h4>
@@ -102,4 +148,5 @@ const CheckSales = () => {
         </div>
     );
 };
+
 export default CheckSales;

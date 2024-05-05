@@ -19,7 +19,9 @@ router.get('/',async(req,res)=>{
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
-      const purchases=await Purchase.find({user:user._id});
+      const purchases = await Purchase.find({ user: user._id })
+                              .sort({ date: -1 }) // Sort by date descending
+                              .limit(5); // Limit to 10 documents
       console.log(purchases);
       res.json({success:true,purchases});
     }
